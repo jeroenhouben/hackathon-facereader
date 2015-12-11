@@ -1,9 +1,32 @@
-function processArticles($articles, emoValue) {
-    // $articles.each(function () {
-    //
-    //
-    //
-    // });
+var MEDIATED_VALENCE = 0;
+
+function processArticles($articles) {
+    var classListToHide = ""
+    var classListToShow = ""
+    
+    switch (MEDIATED_VALENCE) {
+    case -1:
+        classListToShow = "emo-min-1"
+        break;
+    case -0.5:
+        classListToShow = "emo-min-half"
+        break;
+
+    case 0:
+        classListToShow = "emo-0"
+        break;
+
+    case 0.5:
+        classListToShow = "emo-plus-half"
+        break;
+
+    case 1:
+        classListToShow = "emo-plus-1"
+        break;
+    }
+    
+    $articles.hide();
+    $articles.filter('.' + classListToShow).show();
 }
 
 function mediatedValue(val) {
@@ -20,6 +43,8 @@ function mediatedValue(val) {
     } else {
         newVal = -1;
     }
+    
+    return newVal;
 }
 
 $(document).ready(function () {
@@ -31,21 +56,35 @@ $(document).ready(function () {
     var $articles = $('.artikel');
     
     function processFaceReaderOutput(obj) {
-        console.log(obj);
-        
         var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
-    
+
         var valenceObj = _.find(emotions, function(emo) {
           return emo["Label"] == "Valence";
         });
+        
+        var emotion = {
+            neutral: parseFloat(emotions[0]["Value"]["float"].substring(0, 6)),
+            happy:parseFloat(emotions[1]["Value"]["float"].substring(0, 6)),
+            sad:parseFloat(emotions[2]["Value"]["float"].substring(0, 6)),
+            angry:parseFloat(emotions[3]["Value"]["float"].substring(0, 6)),
+            surprised:parseFloat(emotions[4]["Value"]["float"].substring(0, 6)),
+            scared:parseFloat(emotions[5]["Value"]["float"].substring(0, 6)),
+            disgusted:parseFloat(emotions[6]["Value"]["float"].substring(0, 6)),
+            valence:parseFloat(emotions[7]["Value"]["float"].substring(0, 6)),
+            arousal:parseFloat(emotions[8]["Value"]["float"].substring(0, 6))
+        }
+        
+        console.log(emotion);
     
-        var val = parseFloat(valenceObj.Value.float.substring(0, 6));
         
-        $placeholder.text(val);
+        MEDIATED_VALENCE = mediatedValue(emotion.valence);
+
+        $placeholder.text(MEDIATED_VALENCE);
         
-        val = mediatedValence(val);
+        setInterval(function () {
+            processArticles($articles);
+        })
         
-        processArticles($articles, val);
     }
 
     ws.onopen = function() {
