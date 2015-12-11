@@ -14,12 +14,11 @@ Facebook
         
         <link rel="stylesheet" href="styles.css" type="text/css" media="screen">
 
-
 <style>
 
 body {
 	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
-	font-size: 13	px;
+	font-size: 13px;
 	background-color: #e9eaed;
 }
 
@@ -63,18 +62,40 @@ div.start {
 
 div[data-valence] { 
 	background-color:white;
-	padding: 0 10 10 10;
-	margin-bottom:10px;	
+	padding: 0 10 10 100;
+	margin-bottom:10px;		
 }
 
-div[data-valence="-1" class="emo-min-1"] {
-	border: 2px solid #ED8C91;
+div[data-valence="-1"] {
+	background-image:url("plaatjes/angry1.png");
+	background-position:  top left;
+	background-repeat:no-repeat;
+	z-index:1;
 }
 
-div[data-valence="1" class="emo-plus-1"] {
-	border: 2px solid #90D4AD;
+div[data-valence="1"] {
+	background-image:url("plaatjes/happy1.png");
+	background-position: top left;
+	background-repeat:no-repeat;
 }
 
+div[data-valence="0,5"] {
+	background-image:url("plaatjes/happy05.png");
+	background-position:  top left;
+	background-repeat:no-repeat;
+}
+
+div[data-valence="-0,5"] {
+	background-image:url("plaatjes/angry05.png");
+	background-position:  top left;
+	background-repeat:no-repeat;
+}
+
+div[data-valence="0"] {
+	background-image:url("plaatjes/neutral.png");
+	background-position: top left;
+	background-repeat:no-repeat;
+}
 
 img {
 	max-width:100%;
@@ -98,6 +119,7 @@ p {
 	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
 	font-size: 11px;
 	word-wrap: break-word;
+	max-width:75%;
 }
 
 </style>
