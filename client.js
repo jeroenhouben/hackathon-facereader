@@ -21,11 +21,11 @@ var colors = {
 function toggleStatus() {
     var $status = $("#app-status");
     
-    if ($status.text() == "Started") {
+    if ($status.hasClass("started")) {
         STARTED = false;
-        $status.addClass("stopped").removeClass("started").text("Stopped");
+        $status.addClass("stopped").removeClass("started");
     } else {
-        $status.addClass("started").removeClass("stopped").text("Started");
+        $status.addClass("started").removeClass("stopped");
         STARTED = true;
     }
 }
