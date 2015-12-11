@@ -5,6 +5,11 @@ var $innerMeter;
 var $articles;
 var $span;
 
+var STARTED = true;
+
+var classListToHide = ""
+var classListToShow = "emo-0"
+
 var colors = {
     "emo-min-1": "#44383B",
     "emo-min-half":"#9788AF",
@@ -13,20 +18,36 @@ var colors = {
     "emo-plus-1":"#FF6EB0"
 }
 
+function toggleStatus() {
+    var $status = $("#app-status");
+    
+    if ($status.text() == "Started") {
+        STARTED = false;
+        $status.addClass("stopped").removeClass("started").text("Stopped");
+    } else {
+        $status.addClass("started").removeClass("stopped").text("Started");
+        STARTED = true;
+    }
+}
+
 function renderMeter() {
+    if (!STARTED) return;
+
     var val = VALENCE + 1;
     
     $innerMeter.css({
             "width": val * 60 + '%'
         }
-    );
+    )
+    
+    // $innerMeter.css("background-color", colors[classListToShow]);
+
     $span.text(VALENCE);
     
 }
 
 function processArticles() {
-    var classListToHide = ""
-    var classListToShow = ""
+    if (!STARTED) return;
     
     switch (MEDIATED_VALENCE) {
     case -1:
@@ -77,6 +98,34 @@ function mediatedValue(val) {
     return newVal;
 }
 
+function processFaceReaderOutput(obj) {
+    var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
+
+    var valenceObj = _.find(emotions, function(emo) {
+      return emo["Label"] == "Valence";
+    });
+    
+    var emotion = {
+        neutral: parseFloat(emotions[0]["Value"]["float"].substring(0, 6)),
+        happy:parseFloat(emotions[1]["Value"]["float"].substring(0, 6)),
+        sad:parseFloat(emotions[2]["Value"]["float"].substring(0, 6)),
+        angry:parseFloat(emotions[3]["Value"]["float"].substring(0, 6)),
+        surprised:parseFloat(emotions[4]["Value"]["float"].substring(0, 6)),
+        scared:parseFloat(emotions[5]["Value"]["float"].substring(0, 6)),
+        disgusted:parseFloat(emotions[6]["Value"]["float"].substring(0, 6)),
+        valence:parseFloat(emotions[7]["Value"]["float"].substring(0, 6)),
+        arousal:parseFloat(emotions[8]["Value"]["float"].substring(0, 6))
+    }
+    
+
+    VALENCE = emotion.valence;
+    
+    console.log(VALENCE);
+    
+    MEDIATED_VALENCE = mediatedValue(emotion.valence);
+}
+
+
 $(document).ready(function () {
 
     ws = new WebSocket("ws://localhost:9292");
@@ -89,35 +138,11 @@ $(document).ready(function () {
     
     $articles = $('div[data-valence]');
     
-    function processFaceReaderOutput(obj) {
-        var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
-
-        var valenceObj = _.find(emotions, function(emo) {
-          return emo["Label"] == "Valence";
-        });
-        
-        var emotion = {
-            neutral: parseFloat(emotions[0]["Value"]["float"].substring(0, 6)),
-            happy:parseFloat(emotions[1]["Value"]["float"].substring(0, 6)),
-            sad:parseFloat(emotions[2]["Value"]["float"].substring(0, 6)),
-            angry:parseFloat(emotions[3]["Value"]["float"].substring(0, 6)),
-            surprised:parseFloat(emotions[4]["Value"]["float"].substring(0, 6)),
-            scared:parseFloat(emotions[5]["Value"]["float"].substring(0, 6)),
-            disgusted:parseFloat(emotions[6]["Value"]["float"].substring(0, 6)),
-            valence:parseFloat(emotions[7]["Value"]["float"].substring(0, 6)),
-            arousal:parseFloat(emotions[8]["Value"]["float"].substring(0, 6))
+    $(document).on('keypress', function (e) {
+        if (e.keyCode == 112) {
+            toggleStatus();
         }
-        
-    
-        VALENCE = emotion.valence;
-        
-        console.log(VALENCE);
-        
-        
-        MEDIATED_VALENCE = mediatedValue(emotion.valence);
-
-        $placeholder.text(MEDIATED_VALENCE);
-    }
+    });
     
 
     ws.onopen = function() {
