@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     ws = new WebSocket("ws://localhost:9292");
     
-    var $placeholder = $("#placeholder");
+    var $placeholder = $("textarea").first();
     
     function processFaceReaderOutput(obj) {
         var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
@@ -11,12 +11,14 @@ $(document).ready(function () {
           return emo["Label"] == "Valence";
         });
     
-        var val = valenceObj.Value.float.substring(0, 6);
-    
+        var val = parseFloat(valenceObj.Value.float.substring(0, 6));
+        
         $placeholder.text(val);
     }
 
-    ws.onopen = function() {};
+    ws.onopen = function() {
+        console.log("Im connected to WS!");
+    };
 
     ws.onmessage = function (evt) {
        var str = evt.data;

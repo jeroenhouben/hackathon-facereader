@@ -35,7 +35,7 @@ wss.on('connection', function(wsClient) {
 function processLine (line) {
     line = line.replace('INFO:root:','')
     
-    // console.log(line);
+    //console.log(line);
     
     if (wss)  {
         for (var i = 0; i < wss.clients.length; i++) {
