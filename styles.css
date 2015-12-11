@@ -3,19 +3,26 @@
 }
 
 #meter {
-    position: absolute;
-    top: 40px;
-    left: 320px;    
-    
+	position:fixed;
+    top: 10px;
+    left: 166px;
     height: 20px;
-    width: 600px;
+    width: 396px;
     border: 1px solid #eee;
+    z-index: 99999;
 }
 #meter .inner {
-    width: 0%;
+    width: 50%;
     height: 20px;
-    background-color: pink;
-    -webkit-transition: width 1s ease-in-out;
-    transition: width 1s ease-in-out;
-    
+    background-color: #E6D951;
+    -webkit-transition: width 0.3s ease-in-out;
+    transition: width 0.3s ease-in-out;
+}
+#meter span {
+    float: right;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 9px;
+    line-height: 20px;
+    color: #fff;
 }

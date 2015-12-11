@@ -1,7 +1,17 @@
+var OLD_MEDIATED_VALENCE = -10;
 var MEDIATED_VALENCE = 0;
 var VALENCE = 0;
 var $innerMeter;
 var $articles;
+var $span;
+
+var colors = {
+    "emo-min-1": "#44383B",
+    "emo-min-half":"#9788AF",
+    "emo-0":"#E6D98B",
+    "emo-plus-half":"#A94D87",
+    "emo-plus-1":"#FF6EB0"
+}
 
 function renderMeter() {
     var val = VALENCE + 1;
@@ -9,7 +19,9 @@ function renderMeter() {
     $innerMeter.css({
             "width": val * 60 + '%'
         }
-    ).text(VALENCE);
+    );
+    $span.text(VALENCE);
+    
 }
 
 function processArticles() {
@@ -39,8 +51,12 @@ function processArticles() {
     
     console.log("show ", classListToShow);
     
-    $articles.hide();
-    $articles.filter('.' + classListToShow).show();
+    if (OLD_MEDIATED_VALENCE != MEDIATED_VALENCE) {
+        $articles.velocity({ opacity: 0.1 }, { duration: 200 });
+        $articles.filter('.' + classListToShow).velocity({ opacity: 1.0 }, { stagger: 50, duration: 100 });
+    }
+    
+    OLD_MEDIATED_VALENCE = MEDIATED_VALENCE;    
 }
 
 function mediatedValue(val) {
@@ -66,6 +82,8 @@ $(document).ready(function () {
     ws = new WebSocket("ws://localhost:9292");
     
     $innerMeter = $("#meter .inner");
+    
+    $span = $innerMeter.find('span');
     
     var $placeholder = $("textarea").first();
     
