@@ -5,11 +5,8 @@ var $innerMeter;
 function renderMeter() {
     var val = VALENCE + 1;
     
-    $innerMeter.velocity({
-            "width": val * 50 + '%'
-        },{ 
-            duration: 300, 
-            queue: false
+    $innerMeter.css({
+            "width": val * 60 + '%'
         }
     ).text(VALENCE);
 }
@@ -90,9 +87,11 @@ $(document).ready(function () {
             arousal:parseFloat(emotions[8]["Value"]["float"].substring(0, 6))
         }
         
-        console.log(emotion);
     
         VALENCE = emotion.valence;
+        
+        console.log(VALENCE);
+        
         
         MEDIATED_VALENCE = mediatedValue(emotion.valence);
 
@@ -107,7 +106,6 @@ $(document).ready(function () {
             processArticles($articles);
         }, 1000);
 
-        setInterval(renderMeter, 400);
     };
 
     ws.onmessage = function (evt) {
@@ -124,6 +122,9 @@ $(document).ready(function () {
        if (json) {
          processFaceReaderOutput(json)
        }
+       
+       setInterval(renderMeter, 1);
+       
     };
     
 });
