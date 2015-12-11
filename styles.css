@@ -1,3 +1,14 @@
 #placeholder {
     font-size: 78px;
 }
+
+#meter {
+    height: 20px;
+    width: 600px;
+    border: 1px solid #eee;
+}
+#meter .inner {
+    width: 0%;
+    height: 20px;
+    background-color: pink;
+}

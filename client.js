@@ -1,4 +1,18 @@
 var MEDIATED_VALENCE = 0;
+var VALENCE = 0;
+var $innerMeter;
+
+function renderMeter() {
+    var val = VALENCE + 1;
+    
+    $innerMeter.velocity({
+            "width": val * 50 + '%'
+        },{ 
+            duration: 300, 
+            queue: false
+        }
+    ).text(VALENCE);
+}
 
 function processArticles($articles) {
     var classListToHide = ""
@@ -26,7 +40,7 @@ function processArticles($articles) {
     }
     
     $articles.hide();
-    $articles.filter('.' + classListToShow).show();
+    $articles.filter('.' + classListToShow).velocity("transition.slideUpIn");
 }
 
 function mediatedValue(val) {
@@ -50,6 +64,8 @@ function mediatedValue(val) {
 $(document).ready(function () {
 
     ws = new WebSocket("ws://localhost:9292");
+    
+    $innerMeter = $("#meter .inner");
     
     var $placeholder = $("textarea").first();
     
@@ -76,19 +92,22 @@ $(document).ready(function () {
         
         console.log(emotion);
     
+        VALENCE = emotion.valence;
         
         MEDIATED_VALENCE = mediatedValue(emotion.valence);
 
         $placeholder.text(MEDIATED_VALENCE);
-        
-        setInterval(function () {
-            processArticles($articles);
-        })
-        
     }
+    
 
     ws.onopen = function() {
         console.log("Im connected to WS!");
+        
+        setInterval(function () {
+            processArticles($articles);
+        }, 1000);
+
+        setInterval(renderMeter, 400);
     };
 
     ws.onmessage = function (evt) {
