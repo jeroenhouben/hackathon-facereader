@@ -1,4 +1,15 @@
 var MEDIATED_VALENCE = 0;
+var VALENCE = 0;
+var $innerMeter;
+
+function renderMeter() {
+    var val = VALENCE + 1;
+    
+    $innerMeter.css({
+            "width": val * 60 + '%'
+        }
+    ).text(VALENCE);
+}
 
 function processArticles($articles) {
     var classListToHide = ""
@@ -26,7 +37,7 @@ function processArticles($articles) {
     }
     
     $articles.hide();
-    $articles.filter('.' + classListToShow).show();
+    $articles.filter('.' + classListToShow).velocity("transition.slideUpIn");
 }
 
 function mediatedValue(val) {
@@ -51,6 +62,8 @@ $(document).ready(function () {
 
     ws = new WebSocket("ws://localhost:9292");
     
+    $innerMeter = $("#meter .inner");
+    
     var $placeholder = $("textarea").first();
     
     var $articles = $('.artikel');
@@ -74,21 +87,25 @@ $(document).ready(function () {
             arousal:parseFloat(emotions[8]["Value"]["float"].substring(0, 6))
         }
         
-        console.log(emotion);
     
+        VALENCE = emotion.valence;
+        
+        console.log(VALENCE);
+        
         
         MEDIATED_VALENCE = mediatedValue(emotion.valence);
 
         $placeholder.text(MEDIATED_VALENCE);
-        
-        setInterval(function () {
-            processArticles($articles);
-        })
-        
     }
+    
 
     ws.onopen = function() {
         console.log("Im connected to WS!");
+        
+        setInterval(function () {
+            processArticles($articles);
+        }, 1000);
+
     };
 
     ws.onmessage = function (evt) {
@@ -105,6 +122,9 @@ $(document).ready(function () {
        if (json) {
          processFaceReaderOutput(json)
        }
+       
+       setInterval(renderMeter, 1);
+       
     };
     
 });
