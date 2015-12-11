@@ -1,6 +1,7 @@
 var MEDIATED_VALENCE = 0;
 var VALENCE = 0;
 var $innerMeter;
+var $articles;
 
 function renderMeter() {
     var val = VALENCE + 1;
@@ -11,7 +12,7 @@ function renderMeter() {
     ).text(VALENCE);
 }
 
-function processArticles($articles) {
+function processArticles() {
     var classListToHide = ""
     var classListToShow = ""
     
@@ -36,8 +37,10 @@ function processArticles($articles) {
         break;
     }
     
+    console.log("show ", classListToShow);
+    
     $articles.hide();
-    $articles.filter('.' + classListToShow).velocity("transition.slideUpIn");
+    $articles.filter('.' + classListToShow).show();
 }
 
 function mediatedValue(val) {
@@ -66,7 +69,7 @@ $(document).ready(function () {
     
     var $placeholder = $("textarea").first();
     
-    var $articles = $('.artikel');
+    $articles = $('div[data-valence]');
     
     function processFaceReaderOutput(obj) {
         var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
@@ -102,9 +105,7 @@ $(document).ready(function () {
     ws.onopen = function() {
         console.log("Im connected to WS!");
         
-        setInterval(function () {
-            processArticles($articles);
-        }, 1000);
+        setInterval(processArticles, 1000);
 
     };
 
