@@ -3,6 +3,10 @@
 }
 
 #meter {
+    position: absolute;
+    top: 40px;
+    left: 320px;    
+    
     height: 20px;
     width: 600px;
     border: 1px solid #eee;
