@@ -1,5 +1,7 @@
 ws = new WebSocket("ws://localhost:9292");
 
+var $placeholder = $("#placeholder");
+
 function processFaceReaderOutput(obj) {
     var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
     
@@ -7,7 +9,9 @@ function processFaceReaderOutput(obj) {
       return emo["Label"] == "Valence";
     });
     
-    console.log(valenceObj.Value.float);
+    var val = valenceObj.Value.float.substring(0, 6);
+    
+    $placeholder.text(val);
 }
 
 ws.onopen = function() {};
