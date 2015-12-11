@@ -1,34 +1,38 @@
-ws = new WebSocket("ws://localhost:9292");
+$(document).ready(function () {
 
-var $placeholder = $("#placeholder");
-
-function processFaceReaderOutput(obj) {
-    var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
+    ws = new WebSocket("ws://localhost:9292");
     
-    var valenceObj = _.find(emotions, function(emo) {
-      return emo["Label"] == "Valence";
-    });
+    var $placeholder = $("#placeholder");
     
-    var val = valenceObj.Value.float.substring(0, 6);
+    function processFaceReaderOutput(obj) {
+        var emotions = obj["Classification"]["ClassificationValues"]["ClassificationValue"];
     
-    $placeholder.text(val);
-}
+        var valenceObj = _.find(emotions, function(emo) {
+          return emo["Label"] == "Valence";
+        });
+    
+        var val = valenceObj.Value.float.substring(0, 6);
+    
+        $placeholder.text(val);
+    }
 
-ws.onopen = function() {};
+    ws.onopen = function() {};
 
-ws.onmessage = function (evt) {
-   var str = evt.data;
+    ws.onmessage = function (evt) {
+       var str = evt.data;
 
-   var json = null;
+       var json = null;
 
-   try  {
-       json = JSON.parse(str);
-   } catch(e) {
+       try  {
+           json = JSON.parse(str);
+       } catch(e) {
 
-   }
+       }
 
-   if (json) {
-     processFaceReaderOutput(json)
-   }
-};
+       if (json) {
+         processFaceReaderOutput(json)
+       }
+    };
+    
+});
 
