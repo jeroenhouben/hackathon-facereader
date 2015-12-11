@@ -30,21 +30,18 @@
 #app-status {
     position: fixed;
     top: 10px;
-    left: 102px;
-    height: 10px;
-    background: #eee;
+    left: 730px;
     z-index: 9999989;
-    padding: 5px;
     color: #fff;
-    line-height: 12px;
-    border: 1px solid #fff;
-    width: 10px;
-    text-align: center;
+    width: 60px;
+    height: 21px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #app-status.started {
-    background-color: #4FE01A;    
+    background-image: url("switch-on.png");
 }
 #app-status.stopped {
-    background-color: red;    
+    background-image: url("switch-off.png");
 }
